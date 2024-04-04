@@ -49,15 +49,18 @@ class ActivityRegister : AppCompatActivity() {
         mProgressBar = ProgressDialog(this)
     }
 
+    //para verificar credenciales de registro
     private fun verificarCredenciales() {
-        val newuser:User= User()
         val email = txtInputEmail.text.toString()
         val password = txtInputPassword.text.toString()
         val confirmPass = txtInputConfirmPassword.text.toString()
+        val allowedDomain = "@miumg.edu.gt"
+
         when {
-            email.isEmpty() || !email.contains("@") -> showError(txtInputUsername, "Email no valido")
-            password.isEmpty() || password.length < 7 -> showError(txtInputPassword, "Clave no valida minimo 7 caracteres")
-            confirmPass.isEmpty() || confirmPass != password -> showError(txtInputConfirmPassword, "Clave no valida, no coincide.")
+            email.isEmpty() -> showError(txtInputEmail, "Por favor, ingrese su correo electrónico")
+            !email.endsWith(allowedDomain) -> showError(txtInputEmail, "Solo se permiten correos electrónicos con dominio $allowedDomain")
+            password.isEmpty() || password.length < 7 -> showError(txtInputPassword, "La contraseña debe tener al menos 7 caracteres")
+            confirmPass.isEmpty() || confirmPass != password -> showError(txtInputConfirmPassword, "La confirmación de la contraseña no coincide")
             else -> {
                 mProgressBar.setTitle("Proceso de Registro")
                 mProgressBar.setMessage("Registrando usuario, espere un momento")
@@ -67,11 +70,6 @@ class ActivityRegister : AppCompatActivity() {
                 mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         mProgressBar.dismiss()
-                        newuser.userId="" //TODO("Agregar  uid generado en auth")
-                        newuser.userEmail=email
-                        newuser.userName=email.substringBefore('@').orEmpty()//TODO("Agregar nombre de usuario")
-                        newuser.hasCustomIcon=false//TODO("Agregar funcionalidad de imagenes para que ingrese el path /Users/<uid>/Icon.png")
-                        userCollections.insertUser(newuser)
                         val intent = Intent(this@ActivityRegister, ActivityLogin::class.java)
                         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
                         startActivity(intent)
@@ -82,6 +80,11 @@ class ActivityRegister : AppCompatActivity() {
             }
         }
     }
+
+
+
+
+    //aqui finaliza el metodo
 
     private fun showError(input: EditText, s: String) {
         input.error = s
