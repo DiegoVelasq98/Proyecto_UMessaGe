@@ -63,7 +63,7 @@ class ActivityRegister : AppCompatActivity() {
             confirmPass.isEmpty() || confirmPass != password -> showError(txtInputConfirmPassword, "La confirmación de la contraseña no coincide")
             else -> {
                 mProgressBar.setTitle("Proceso de Registro")
-                mProgressBar.setMessage("Registrando usuario, espere un momento")
+                mProgressBar.setMessage("Registrando usuario, espere un momento por favor")
                 mProgressBar.setCanceledOnTouchOutside(false)
                 mProgressBar.show()
 
